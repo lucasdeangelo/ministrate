@@ -1,11 +1,40 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
+import { registerUser } from '../api/api';
 
 export default function Cadastro({ navigateTo }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert("Erro", "As senhas não coincidem");
+      return;
+    }
+    
+    const createUser = {
+      name,
+      email,
+      password,
+    };
+
+    try {
+      const response = await registerUser(createUser);
+
+      if (response.status === 201 || response.status === 200) {
+        console.log(response)
+        Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+        navigateTo('Login');
+      } else {
+        throw new Error(`Erro inesperado: ${response.status}`);
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao realizar cadastro. Verifique os dados e tente novamente.');
+      console.error('Erro no cadastro:', error.message || error);
+    }
+  };
 
   return (
     <View style={styles.main}>
@@ -59,7 +88,7 @@ export default function Cadastro({ navigateTo }) {
             />
           </View>
 
-          <TouchableOpacity style={styles.submit}>
+          <TouchableOpacity style={styles.submit} onPress={handleRegister}>
             <Text style={styles.submitText}>Cadastrar</Text>
           </TouchableOpacity>
 

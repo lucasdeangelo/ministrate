@@ -5,8 +5,10 @@ const api = axios.create({
   timeout: 10000
 });
 
-export const registerUser = async () => {
-  const response = await api.post('/user');
+export const registerUser = async (cadUser) => {
+  const response = await api.post('/user', cadUser, {
+    headers: { 'Content-Type': 'application/json' },
+  });
   return response.data;
 };
 
