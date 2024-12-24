@@ -11,15 +11,13 @@ export const registerUser = async () => {
 };
 
 export const userLogin = async (loginUser) => {
-  const response = await axios.post(
-    'http://localhost:3333/login',  // Certifique-se de que esta URL está correta
-    loginUser,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-  
+  try {
+    const response = await api.post('/login', loginUser, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    return response.data;  
+  } catch (error) {
+    console.error('Erro na API:', error);
+    throw error; 
+  }
 };
-

@@ -8,12 +8,35 @@ import Cadastro from './screens/cadastro.js';
 import Dashboard from './screens/dashboard.js';
 
 function Page() {
-  const { user } = useContext(AuthContext);
+  const { user, login, logout } = useContext(AuthContext);
   const [currentScreen, setCurrentScreen] = useState('Login');
 
   const navigateTo = (screen) => {
-    console.log('Navegando para:', screen); // Debug
     setCurrentScreen(screen);
+  };
+
+  const handleLogin = async (userData) => {
+    const { id, token } = userData;
+
+    try {
+      await AsyncStorage.setItem('userToken', token).then(console.log);;
+      await AsyncStorage.setItem('id', id.toString()).then(console.log);;
+      login(userData); // Atualiza o contexto
+      setCurrentScreen('Dashboard');
+    } catch (error) {
+      console.error('Erro ao salvar dados de login:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('id');
+      logout();
+      setCurrentScreen('Login');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
   };
 
   let ScreenComponent;
@@ -21,12 +44,16 @@ function Page() {
   if (!user) {
     ScreenComponent = currentScreen === 'Cadastro' ? Cadastro : Login;
   } else {
-    ScreenComponent = Login; // Altere conforme sua lógica de usuário logado
+    ScreenComponent = Dashboard;
   }
 
   return (
     <View style={styles.container}>
-      <ScreenComponent navigateTo={navigateTo} />
+      <ScreenComponent 
+        navigateTo={navigateTo} 
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+      />
     </View>
   );
 }

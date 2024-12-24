@@ -1,23 +1,29 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { userLogin } from '../api/api';
+import axios from 'axios';
 
 export default function Login({ navigateTo }) {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useContext(AuthContext);
   
   const handleLogin = async () => {
     try {
-      const userData = await userLogin({ email, password });
-      login(userData); 
-      navigateTo('Dashboard');
+      const response = await axios.post('http://localhost:3333/login', { email, password });
+
+      if (response.data.token) {
+        const { id_user, token, nome } = response.data;
+        login({ id: id_user, email, nome, token });
+        navigateTo('Dashboard');  
+      } else {
+        alert('Credenciais inválidas. Tente novamente.');
+      }
     } catch (error) {
-      Alert.alert('Erro', 'Email ou senha incorretos.');
+      console.error('Erro ao fazer login:', error.message || error);
+      alert('Erro ao fazer login. Tente novamente.');
     }
   };
-
 
   return (
     <View style={styles.main}>
