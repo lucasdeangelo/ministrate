@@ -6,6 +6,13 @@ import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import Login from './screens/login.js';
 import Cadastro from './screens/cadastro.js';
 import Dashboard from './screens/dashboard.js';
+import Perfil from './screens/perfil.js';
+import Pesquisa from './screens/pesquisa.js';
+import Eventos from './screens/eventos.js';
+import Biblioteca from './screens/biblioteca.js';
+import Configuracoes from './screens/configuracoes.js';
+import Ajuda from './screens/ajuda.js';
+import NovoTexto from './screens/novoTexto.js';
 
 function Page() {
   const { user, login, logout } = useContext(AuthContext);
@@ -19,9 +26,9 @@ function Page() {
     const { id, token } = userData;
 
     try {
-      await AsyncStorage.setItem('userToken', token).then(console.log);;
-      await AsyncStorage.setItem('id', id.toString()).then(console.log);;
-      login(userData); // Atualiza o contexto
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('id', id.toString());
+      login(userData); 
       setCurrentScreen('Dashboard');
     } catch (error) {
       console.error('Erro ao salvar dados de login:', error);
@@ -39,13 +46,40 @@ function Page() {
     }
   };
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        if (token) {
+          setCurrentScreen('Dashboard'); 
+        } else {
+          setCurrentScreen('Login'); 
+        }
+      } catch (error) {
+        console.error('Erro ao verificar autenticação:', error);
+        setCurrentScreen('Login');
+      } 
+    };
+
+    checkAuth();
+  }, []);
+
   let ScreenComponent;
 
-  if (!user) {
-    ScreenComponent = currentScreen === 'Cadastro' ? Cadastro : Login;
-  } else {
-    ScreenComponent = Dashboard;
-  }
+  const screens = {
+    Login,
+    Cadastro,
+    Dashboard,
+    Perfil,
+    Pesquisa,
+    Eventos,
+    Biblioteca,
+    Configuracoes,
+    Ajuda,
+    NovoTexto,
+  };
+
+  ScreenComponent = screens[currentScreen] || Login;
 
   return (
     <View style={styles.container}>
