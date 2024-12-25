@@ -88,9 +88,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1C0080', 
     borderRadius: 8,
-    position: 'absolute',
-    top: 30,
-    left: 30
+    marginTop: 30,
+    marginLeft: 30
   },
   menuText: { 
     color: '#FFF' 
