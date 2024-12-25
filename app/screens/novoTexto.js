@@ -21,12 +21,12 @@ export default function NovoTexto({ navigateTo }) {
 
       <View style={styles.options}>
         <Text style={styles.optionsTitle}>Tipo</Text>
-        <Text style={styles.optionsTxt}>Vazio</Text>
+        <Text style={{...styles.optionsTxt, marginLeft: 80}}>Vazio</Text>
       </View>
 
       <View style={styles.options}>
         <Text style={styles.optionsTitle}>Tema</Text>
-        <Text style={styles.optionsTxt}>Vazio</Text>
+        <Text style={{...styles.optionsTxt, marginLeft: 72}}>Vazio</Text>
       </View>
 
 
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   optionsTxt: {
     color: '#C6C6C6',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 13,
     marginLeft: 40,
     marginVertical: 6
   },
